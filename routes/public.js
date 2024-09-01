@@ -45,6 +45,13 @@ router.post("/login", async (req, res) => {
       return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
+    //Verifica se a senha não CRIPTOGRAFADA fornecida pelo usuário é a mesma que a do banco que ESTÁ CRIPTOGRAFADA
+    const isMatch = await bcrypt.compare(userInfo.password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Senha inválida" });
+    }
+
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: "Erro no Servidor, tente novamente" });
